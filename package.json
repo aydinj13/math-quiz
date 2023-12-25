@@ -13,7 +13,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start-django": "cd ../path/to/django/project && python manage.py runserver",
+    "start-django": "cd backend && python3 manage.py runserver",
     "dev": "concurrently \"npm start\" \"npm run start-django\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
