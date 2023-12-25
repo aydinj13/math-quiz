@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './App.css'
 
 function App() {
@@ -13,7 +13,27 @@ function App() {
   const [correct, setCorrect] = useState(0);
   const [inputValue, setInputValue] = useState('');
   
+  useEffect(() => {
+    fetch('http://localhost:8000/api/leaderboard/')
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+      });
+  }, []);
 
+  const postScore = (playerName, score) => {
+    fetch('http://localhost:8000/api/leaderboard/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ player_name: playerName, score: score }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Score submitted:', data);
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault(); 
