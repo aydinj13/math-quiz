@@ -12,29 +12,63 @@ function App() {
   const [questions, setQuestions] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [inputValue, setInputValue] = useState('');
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
   
   useEffect(() => {
-    fetch('http://localhost:8000/api/leaderboard/')
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-      });
+    fetchLeaderboardData();
   }, []);
-
+  
   const postScore = (playerName, score) => {
-    fetch('http://localhost:8000/api/leaderboard/', {
+    fetch('http://127.0.0.1:8000/leaderboard/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ player_name: playerName, score: score }),
     })
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
     .then(data => {
       console.log('Score submitted:', data);
+      fetchLeaderboardData(); // Refresh the leaderboard
+    })
+    .catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
     });
   };
 
+  const fetchLeaderboardData = () => {
+    fetch('http://127.0.0.1:8000/leaderboard/')
+      .then(response => response.json())
+      .then(data => {
+        setLeaderboard(data);
+      })
+      .catch(error => {
+        console.error('Error fetching leaderboard:', error);
+      });
+  };
+
+  const toggleLeaderboard = () => {
+    setShowLeaderboard(!showLeaderboard);
+  };
+
+
+  const handleFinish = () => {
+    alert(`You attempted ${questions} questions and got ${correct} correct.`);
+    
+    // Call postScore to send data to the backend
+    postScore("PlayerName", correct); // Replace "PlayerName" with actual player name if available
+  
+    setQuestions(0);
+    setCorrect(0);
+    setNumbers(generateRandomNumbers());
+  };
+  
   const handleSubmit = (e) => {
     e.preventDefault(); 
     setQuestions(questions + 1);
@@ -51,13 +85,7 @@ function App() {
     setInputValue(e.target.value);
   };
 
-  const handleFinish = () => {
-    // Example action: Alert the results and reset the quiz
-    alert(`You attempted ${questions} questions and got ${correct} correct.`);
-    setQuestions(0);
-    setCorrect(0);
-    setNumbers(generateRandomNumbers());
-  };
+
 
   return (
     <div className="app-container">
@@ -68,6 +96,21 @@ function App() {
     <input type="number" value={inputValue} onChange={handleInputChange} id="input"></input>
     <button type="button" className="button" onClick={handleFinish}>Finish</button>
     </form>
+
+    <button onClick={toggleLeaderboard} className="button">
+        {showLeaderboard ? 'Hide Leaderboard' : 'Show Leaderboard'}
+      </button>
+
+      {showLeaderboard && (
+        <div className="leaderboard">
+          <h3>Leaderboard</h3>
+          <ul>
+            {leaderboard.map((entry, index) => (
+              <li key={index}>{entry.player_name}: {entry.score}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

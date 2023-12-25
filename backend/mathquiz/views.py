@@ -1,7 +1,7 @@
 from rest_framework import viewsets
-from .models import LeaderboardEntry
-from .serializers import LeaderboardEntrySerializer
+from .models import Leaderboard
+from .serializers import LeaderboardSerializer
 
-class LeaderboardEntryViewSet(viewsets.ModelViewSet):
-    queryset = LeaderboardEntry.objects.all().order_by('-score')
-    serializer_class = LeaderboardEntrySerializer
+class LeaderboardViewSet(viewsets.ModelViewSet):
+    queryset = Leaderboard.objects.all().order_by('-score')
+    serializer_class = LeaderboardSerializer

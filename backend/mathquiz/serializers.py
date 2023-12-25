@@ -1,8 +1,7 @@
-
 from rest_framework import serializers
-from .models import LeaderboardEntry
+from .models import Leaderboard
 
-class LeaderboardEntrySerializer(serializers.ModelSerializer):
+class LeaderboardSerializer(serializers.ModelSerializer):
     class Meta:
-        model = LeaderboardEntry
-        fields = ['id', 'player_name', 'score', 'date']  # Include the fields you want to serialize
+        model = Leaderboard
+        fields = ['id', 'player_name', 'score']

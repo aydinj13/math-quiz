@@ -1,12 +1,10 @@
-
 from django.urls import path, include
 from rest_framework import routers
-from mathquiz.views import LeaderboardEntryViewSet
+from mathquiz import views
 
 router = routers.DefaultRouter()
-router.register(r'leaderboard', LeaderboardEntryViewSet)
+router.register(r'leaderboard', views.LeaderboardViewSet)
 
 urlpatterns = [
-    path('api/', include(router.urls)),
-    # ... other url patterns
+    path('', include(router.urls)),
 ]
